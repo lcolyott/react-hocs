@@ -1,0 +1,90 @@
+@use "sass:map";
+
+$breakpoints: (
+  "min": 240px,
+  "xs": 480px,
+  "sm": 600px,
+  "md": 960px,
+  "lg": 1280px,
+  "xl": 1920px,
+  "max": 100%,
+);
+
+@mixin breakpoint($bpUp: "max", $bpDown: "min") {
+  $down: map-get($breakpoints, $bpDown);
+  $up: map-get($breakpoints, $bpUp);
+
+  @media (min-width: $down) and (max-width: $up) {
+    @content;
+  }
+}
+
+@mixin flexbox($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.App {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  background-color: rgb(245, 245, 245);
+
+  overflow: hidden;
+
+  &-Static {
+    grid-area: static;
+
+    @include flexbox();
+  }
+
+  &-Responsive {
+    grid-area: responsive;
+
+    @include flexbox();
+
+    background-color: dodgerblue;
+
+    @include breakpoint("lg") {
+      background-color: darken(dodgerblue, 20);
+    }
+
+    @include breakpoint("md") {
+      background-color: darken(dodgerblue, 40);
+
+      @include flexbox(column);
+    }
+
+    @include breakpoint("sm") {
+      display: none;
+
+      background-color: darken(dodgerblue, 60);
+    }
+  }
+
+  & > .Layout {
+    position: relative;
+
+    display: grid;
+    grid-template-areas: "static responsive";
+    grid-template-columns: "1fr 1fr";
+
+    width: 100%;
+    height: 100%;
+
+    @include breakpoint("md") {
+      grid-template-columns: auto;
+      grid-template-rows: "50% 50%";
+      grid-template-areas:
+        "static"
+        "responsive";
+    }
+  }
+}
