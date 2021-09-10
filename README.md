@@ -1,6 +1,6 @@
 # Overview
 
-[`Placeholder`]
+Examples of React HOCs, typing, and constraining flow of logic
 
 ## Available Scripts
 
