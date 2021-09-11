@@ -1,119 +1,204 @@
-.Widget {
+/* region Variables */
+$pColor: dodgerblue;
+$sColor: deepskyblue;
+$tColor: rgb(64, 64, 64);
+$border: 1px solid rgba(0, 0, 0, 0.07) !default;
+
+// Sass map at different palettes
+$palettes: (
+    "main": (
+        "primary": $pColor,
+        "secondary": $sColor,
+        "background": white,
+        "text": $tColor,
+        "primaryText": $tColor,
+        "secondaryText": $sColor,
+    ),
+    "light": (
+        "primary": lighten($pColor, 20),
+        "secondary": lighten($sColor, 30),
+        "background": white,
+        "text": $sColor,
+        "primaryText": $tColor,
+        "secondaryText": $sColor,
+    ),
+    "dark": (
+        "primary": darken($pColor, 10),
+        "secondary": $sColor,
+        "background": darken($pColor, 50),
+        "text": $sColor,
+        "primaryText": $tColor,
+        "secondaryText": $sColor,
+    ),
+);
+/* endregion */
+
+/*#region Mixins */
+@mixin common($palette: "main") {
+    $primary: lighten(blueviolet, 10) !default;
+    $secondary: map-get(map-get($palettes, $palette), "secondary") !default;
+    $background: map-get(map-get($palettes, $palette), "background") !default;
+    $text: map-get(map-get($palettes, $palette), "text") !default;
+
+    border: 1px solid $secondary;
+    background-color: $background;
+    color: $text;
+
+    @content;
+}
+/*#endregion */
+
+/*#region Styles */
+div[class^="Widget"] {
     z-index: 1;
     position: relative;
 
     display: flex;
     flex-direction: column;
 
-    min-width: 200px;
+    min-width: 15rem;
 
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: $border;
     border-radius: 6px;
-    background-color: white;
-    color: black;
 
-    &-Header {
-        padding: 0.5rem;
-
-        min-height: 2rem;
-
-        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    &[class$="--idle"] {
+        @include common("main");
     }
 
-    &-Body {
-        position: relative;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        padding: 0.5rem;
-
-        min-height: 10rem;
+    &[class$="--loading"] {
+        @include common("light");
     }
 
-    &-Footer {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 0.5rem;
-
-        padding: 0.5rem;
-
-        border-top: 1px solid rgba(0, 0, 0, 0.12);
-
-        & > .ActionButton {
+    & > * {
+        &[class*="Header"] {
             display: flex;
-            justify-content: center;
             align-items: center;
 
-            flex: 0 0 4rem;
-            height: 2rem;
+            padding: 0.5rem;
 
-            border: 1px solid darken(aliceblue, 5);
-            border-radius: 6px;
+            min-height: 2rem;
 
-            background-color: aliceblue;
+            border-bottom: $border;
 
-            color: darken(aliceblue, 20);
+            font-weight: bold;
+        }
 
-            transition: border 0.3s, background-color 0.3s, color 0.3s;
+        &[class$="Body"] {
+            position: relative;
 
-            // Make inner text non-highlightable
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+/Edge */
-            user-select: none; /* Standard */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
 
-            // While mouse over element
-            &:hover:not(:active) {
-                border: 1px solid rgba(0, 0, 0, 0);
-                background-color: lighten(aliceblue, 0.5);
+            gap: 0.5rem;
 
-                cursor: pointer;
+            padding: 0.5rem;
+
+            min-height: 12rem;
+
+            & > [class$="Spinner"] {
+                z-index: 5;
+
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                bottom: 0.5rem;
+                left: 0.5rem;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                border-radius: 6px;
+
+                & .Spinner-Text {
+                    @keyframes fontsize {
+                        0% {
+                            font-size: 1.6rem;
+                        }
+                        50% {
+                            font-size: 1.4rem;
+                        }
+                        100% {
+                            font-size: 1.6rem;
+                        }
+                    }
+
+                    animation: fontsize 3s ease infinite;
+                }
             }
 
-            // While mouse held down
-            &:active {
-                background-color: darken(aliceblue, 5);
-                color: white;
+            // Palette Test
+            & > .test {
+                flex: 1 1 auto;
+
+                border-radius: 6px;
+
+                &-main {
+                    @extend .test;
+                    @include common();
+                }
+
+                &-light {
+                    @extend .test;
+                    @include common("light");
+                }
+
+                &-dark {
+                    @extend .test;
+                    @include common("dark");
+                }
             }
         }
-    }
 
-    @keyframes spinner {
-        0% {
-            background-position: 0% 50%;
+        &[class$="Footer"] {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+
+            padding: 0.5rem;
+
+            border-top: $border;
+
+            & > .ActionButton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                flex: 1 0 4rem;
+                height: 2rem;
+
+                border: $border;
+                border-radius: 6px;
+
+                // background-color: $dark;
+
+                // Make inner text non-highlightable
+                -webkit-user-select: none; /* Safari */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* IE10+/Edge */
+                user-select: none; /* Standard */
+
+                transition: border 0.3s, background-color 0.3s, color 0.3s;
+
+                // While mouse over element and the element is not active
+                &:hover:not(:active) {
+                    border: 1px solid rgba(0, 0, 0, 0);
+                    // background-color: $light;
+
+                    cursor: pointer;
+                }
+
+                // While mouse held down
+                &:active {
+                    // background-color: $textColor;
+                    color: white;
+                }
+            }
         }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-    &-Spinner {
-        z-index: 5;
-
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        bottom: 0.5rem;
-        left: 0.5rem;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        background: linear-gradient(-45deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.02));
-        background-size: 400% 400%;
-        border-radius: 6px;
-
-        color: rgba(0, 0, 0, 0.3);
-
-        animation: spinner 5s ease infinite;
     }
 }
+/*#endregion */

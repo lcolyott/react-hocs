@@ -1,3 +1,3 @@
-import { ScriptInjectedWidget, UncontrolledWidget } from "./widget";
+import { ScriptInjectedWidget, BaseWidget, HookedWidget } from "./widget";
 
-export { ScriptInjectedWidget, UncontrolledWidget }
+export { ScriptInjectedWidget, BaseWidget, HookedWidget }

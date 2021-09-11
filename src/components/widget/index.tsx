@@ -1,4 +1,5 @@
 import ScriptInjectedWidget from "./injected";
-import UncontrolledWidget from "./uncontrolled";
+import BaseWidget from "./base";
+import HookedWidget from "./hooked";
 
-export { ScriptInjectedWidget, UncontrolledWidget };
+export { ScriptInjectedWidget, BaseWidget, HookedWidget };

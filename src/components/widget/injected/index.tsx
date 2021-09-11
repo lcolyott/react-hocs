@@ -2,43 +2,9 @@ import React, { useEffect } from "react";
 import { scriptContext } from "../../../context/script";
 import { WidgetProps } from "../types";
 import "../index.scss";
+import BaseWidget from "../base";
 
-const Widget: React.FunctionComponent<WidgetProps> = (props) => {
-    return (
-        <div className={"Widget"}>
-            <div className={"Widget-Header"}>
-
-            </div>
-            <div className={"Widget-Body"}>
-                {props.children}
-                {!props.script ? (
-                    <div className={"Widget-Spinner"}>
-                        Loading...
-                    </div>
-                ) : (
-                    <div>
-                        Script: {props.script}
-                    </div>
-                )
-                }
-            </div>
-            <div className={"Widget-Footer"}>
-                <div className={"ActionButton"} >
-                    Submit
-                </div>
-                <div className={"ActionButton"} >
-                    Cancel
-                </div>
-            </div>
-        </div>
-    );
-};
-
-interface WithScriptState {
-    script?: string;
-};
-
-const withScript = (Widget: React.ComponentType<WidgetProps>) => {
+const withScriptContext = (Widget: React.ComponentType<WidgetProps>) => {
     const ScriptInjectedWidget: React.FunctionComponent<
         Omit<
             WidgetProps,
@@ -46,9 +12,7 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
         >
     > = (props) => {
         const context = React.useContext(scriptContext);
-        const [state, setState] = React.useState<Partial<WithScriptState>>({
-            script: "",
-        });
+        const [script, setScript] = React.useState<Partial<string | undefined>>(undefined);
 
         useEffect(() => {
             console.log("%c Injected Widget Mounted! (useEffect)", 'color: green')
@@ -66,9 +30,7 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
         useEffect(() => {
             console.log("%c Injected Script Changed! (useEffect)", 'color: chartreuse');
 
-            setState({
-                script: context.script
-            });
+            setScript(context.script);
         }, [context.script]);
 
         // Memos will run on render
@@ -76,9 +38,9 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
             console.log(`%c Injected Widget Rerendered! (memo)`, 'color: chartreuse');
 
             return (
-                <Widget script={state.script} />
+                <Widget script={script} {...props} />
             );
-        }, [state.script]);
+        }, [script]);
 
         return renderWidget;
     };
@@ -86,6 +48,6 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
     return ScriptInjectedWidget;
 };
 
-const ScriptInjectedWidget = withScript(Widget);
+const ScriptInjectedWidget = withScriptContext(BaseWidget);
 
 export default ScriptInjectedWidget;

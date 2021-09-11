@@ -10,7 +10,9 @@ async function fetchScriptsAsync(): Promise<string | undefined> {
 
         setTimeout(() => {
             resolve(scriptToInject);
-        }, 10000);
+
+            console.log("%c Finished Fetching Script!", "color: cyan");
+        }, 5000);
     });
 
     return await promise;
