@@ -6,15 +6,37 @@ import "../index.scss";
 const Widget: React.FunctionComponent<WidgetProps> = (props) => {
     return (
         <div className={"Widget"}>
-            {props.children}
-            {`<script src='${props.script ?? ""}'/>`}
+            <div className={"Widget-Header"}>
+
+            </div>
+            <div className={"Widget-Body"}>
+                {props.children}
+                {!props.script ? (
+                    <div className={"Widget-Spinner"}>
+                        Loading...
+                    </div>
+                ) : (
+                    <div>
+                        Script: {props.script}
+                    </div>
+                )
+                }
+            </div>
+            <div className={"Widget-Footer"}>
+                <div className={"ActionButton"} >
+                    Submit
+                </div>
+                <div className={"ActionButton"} >
+                    Cancel
+                </div>
+            </div>
         </div>
     );
 };
 
 interface WithScriptState {
     script?: string;
-}
+};
 
 const withScript = (Widget: React.ComponentType<WidgetProps>) => {
     const ScriptInjectedWidget: React.FunctionComponent<
@@ -24,42 +46,15 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
         >
     > = (props) => {
         const context = React.useContext(scriptContext);
-        const [mounted, setMounted] = React.useState<boolean>(false);
         const [state, setState] = React.useState<Partial<WithScriptState>>({
-            script: undefined,
+            script: "",
         });
 
-        const handleScriptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            (event.target.value !== state.script) && context.onScriptChange?.(event.target.value);
-        };
-
-        // Memos will run on render
-        const renderWidget = React.useMemo(() => {
-            console.log(`%c Injected Widget Rerendered! (memo)`, 'background: green; color: #000');
-            console.log(state);
-
-            return (
-                <Widget script={state.script} >
-                    <div>
-                        <span>Injected Script: </span>
-                        <input
-                            type={"text"}
-                            value={state.script}
-                            onChange={handleScriptChange}
-                        />
-                        {props.children}
-                    </div>
-                </Widget>
-            );
-        }, [mounted, state.script]);
-
         useEffect(() => {
-            console.log("%c Mounting Injected Widget! (useEffect)", 'background: green; color: #000')
+            console.log("%c Injected Widget Mounted! (useEffect)", 'color: green')
 
             return function cleanup() {
-                console.log("%c Injected Widget Mounted! (useEffect)", 'background: green; color: #000')
-
-                setMounted(true);
+                console.log("%c Injected Widget Unmounted! (useEffect)", 'color: crimson')
             }
         }, [])
 
@@ -69,12 +64,21 @@ const withScript = (Widget: React.ComponentType<WidgetProps>) => {
         // Therefor, we can constrain the memo to only run AFTER the useEffect and control our flow of data
         // NOTE: The first render doesn't apply to these rules. The memos will still run first initially.
         useEffect(() => {
-            console.log("%c Injected Script Changed! (useEffect)", 'background: green; color: #000');
+            console.log("%c Injected Script Changed! (useEffect)", 'color: chartreuse');
 
             setState({
                 script: context.script
             });
         }, [context.script]);
+
+        // Memos will run on render
+        const renderWidget = React.useMemo(() => {
+            console.log(`%c Injected Widget Rerendered! (memo)`, 'color: chartreuse');
+
+            return (
+                <Widget script={state.script} />
+            );
+        }, [state.script]);
 
         return renderWidget;
     };
