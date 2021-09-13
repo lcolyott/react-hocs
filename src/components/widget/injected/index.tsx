@@ -28,14 +28,14 @@ const withScriptContext = (Widget: React.ComponentType<WidgetProps>) => {
         // Therefor, we can constrain the memo to only run AFTER the useEffect and control our flow of data
         // NOTE: The first render doesn't apply to these rules. The memos will still run first initially.
         useEffect(() => {
-            console.log("%c Injected Script Changed! (useEffect)", 'color: chartreuse');
+            console.log("%c Context Script Changed! (useEffect)", 'color: chartreuse');
 
             setScript(context.script);
         }, [context.script]);
 
         // Memos will run on render
         const renderWidget = React.useMemo(() => {
-            console.log(`%c Injected Widget Rerendered! (memo)`, 'color: chartreuse');
+            console.log(`%c Context Widget Rerendered! (memo)`, 'color: chartreuse');
 
             return (
                 <Widget script={script} {...props} />

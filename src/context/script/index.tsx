@@ -13,14 +13,17 @@ export const ScriptConsumer = scriptContext.Consumer;
 export const ScriptProvider: React.FunctionComponent<{}> = (props) => {
     const [script, setScript] = React.useState<string | undefined>(undefined);
 
+    console.log("%c Script Context Fetching Scripts...", "color: yellow");
+
     // Mock loading the scripts into the context and pass it to necessary components
     useEffect(() => {
+
         fetchScriptsAsync().then((string) => {
             setScript(string);
         }).catch((script) => {
             setScript(undefined);
         }).finally(() => {
-            
+            console.log("%c Script Context Finished Fetching Script!", "color: cyan");
         });
     }, []);
 

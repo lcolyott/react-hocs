@@ -13,20 +13,18 @@ const BaseWidget: React.FunctionComponent<WidgetProps> = (props) => {
     };
 
     useEffect(() => {
-        console.log(`%c Mounted! (BaseWidget ${props.title}: useEffect)`, 'color: yellow');
-
-        console.log(props);
+        console.log(`%c Mounted! (${props.title ?? "Base Widget"}: useEffect)`, 'color: yellow');
 
         return function cleanup() {
-            console.log(`%c Unmounted! (BaseWidget ${props.title}: useEffect)`, 'color: crimson');
+            console.log(`%c Unmounted! (${props.title ?? "BaseWidget"}: useEffect)`, 'color: crimson');
         }
     }, [])
 
     useEffect(() => {
-        console.log(`%c Script Changed! (BaseWidget ${props.title}: useEffect)`, 'color: yellow');
+        console.log(`%c Script Changed! (${props.title ?? "BaseWidget"}: useEffect)`, 'color: yellow');
     }, [props.script]);
 
-    console.log(`%c Base Widget Rendering! (render)`, 'color: charteuse');
+    console.log(`%c ${props.title ?? "BaseWidget"} Rendering! (render)`, 'color: charteuse');
 
     return (
         <div className={classes["Widget"]}>

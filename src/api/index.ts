@@ -6,12 +6,8 @@ async function fetchScriptsAsync(): Promise<string | undefined> {
     var scriptToInject: string | undefined = "InjectedScript";
 
     let promise = new Promise<string | undefined>((resolve, reject) => {
-        console.log("%c Fetching Scripts...", "color: yellow");
-
         setTimeout(() => {
             resolve(scriptToInject);
-
-            console.log("%c Finished Fetching Script!", "color: cyan");
         }, 5000);
     });
 
