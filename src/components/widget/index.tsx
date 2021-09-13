@@ -1,4 +1,4 @@
-import ScriptInjectedWidget from "./injected";
+import ScriptInjectedWidget from "./context";
 import BaseWidget from "./base";
 import HookedWidget from "./hooked";
 
